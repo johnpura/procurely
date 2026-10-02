@@ -1,41 +1,42 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Staff</h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('status'))
-                <div class="mb-4 text-sm text-green-600">{{ session('status') }}</div>
-            @endif
+@section('title', 'Staff')
 
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <div class="mb-4">
-                    <a href="{{ route('staff.create') }}"
-                       class="inline-flex px-4 py-2 bg-gray-800 text-white text-xs uppercase rounded-md">
-                        Add user
-                    </a>
-                </div>
+@section('content')
+    @if (session('status'))
+        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-green-500/15 dark:text-green-400">
+            {{ session('status') }}
+        </div>
+    @endif
 
-                <table class="min-w-full text-sm text-left">
-                    <thead>
-                        <tr class="border-b">
-                            <th class="py-2">Name</th>
-                            <th class="py-2">Email</th>
-                            <th class="py-2">Role</th>
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between px-6 py-5">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Staff</h3>
+            <a href="{{ route('staff.create') }}"
+               class="rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600">
+                Add user
+            </a>
+        </div>
+
+        <div class="overflow-x-auto border-t border-gray-100 dark:border-gray-800">
+            <table class="min-w-full text-left text-sm">
+                <thead>
+                    <tr class="border-b border-gray-100 text-gray-500 dark:border-gray-800 dark:text-gray-400">
+                        <th class="px-6 py-3 font-medium">Name</th>
+                        <th class="px-6 py-3 font-medium">Email</th>
+                        <th class="px-6 py-3 font-medium">Role</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-800 dark:text-white/90">
+                    @foreach ($users as $user)
+                        <tr class="border-b border-gray-100 dark:border-gray-800">
+                            <td class="px-6 py-3">{{ $user->name }}</td>
+                            <td class="px-6 py-3">{{ $user->email }}</td>
+                            <td class="px-6 py-3">{{ ucfirst($user->role->value) }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($users as $user)
-                            <tr class="border-b">
-                                <td class="py-2">{{ $user->name }}</td>
-                                <td class="py-2">{{ $user->email }}</td>
-                                <td class="py-2">{{ ucfirst($user->role->value) }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
-</x-app-layout>
+@endsection
