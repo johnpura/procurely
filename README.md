@@ -14,7 +14,7 @@ Procurely is a vendor bidding platform that manages the full lifecycle of solici
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within Procurely, please send an e-mail to John Pura via [jepura@gmail.com](mailto:jepura@gmail.com). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within Procurely, please send an e-mail to John Pura via [29443585+johnpura@users.noreply.github.com](mailto:j29443585+johnpura@users.noreply.github.com). All security vulnerabilities will be promptly addressed.
 
 ## License
 
