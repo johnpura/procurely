@@ -57,12 +57,9 @@
     @mouseleave="$store.sidebar.setHovered(false)">
     <!-- Logo Section -->
     <div class="pt-8 pb-7 flex items-center gap-2" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'justify-center' : 'justify-between'">
-        <a href="/">
-            <div class="hidden [.sidebar-expanded_&]:block">
-                <img class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" width="150" height="40" />
-                <img class="hidden dark:block" src="/images/logo/logo-dark.svg" alt="Logo" width="150" height="40" />
-            </div>
-            <img class="block [.sidebar-expanded_&]:hidden" src="/images/logo/logo-icon.svg" alt="Logo" width="32" height="32" />
+        <a href="{{ route('dashboard') }}" class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <span class="hidden [.sidebar-expanded_&]:inline">Procurely</span>
+            <span class="inline text-brand-500 [.sidebar-expanded_&]:hidden">P</span>
         </a>
     </div>
 
@@ -213,10 +210,5 @@
                 @endforeach
             </div>
         </nav>
-
-        <!-- Sidebar Widget -->
-        <div class="hidden [.sidebar-expanded_&]:block mt-auto">
-            @include('layouts.sidebar-widget')
-        </div>
     </div>
 </aside>
