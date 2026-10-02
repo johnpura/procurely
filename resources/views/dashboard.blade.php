@@ -1,17 +1,14 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
+@section('title', 'Dashboard')
+
+@section('content')
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+            Welcome, {{ auth()->user()->name }}
+        </h3>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            You are signed in as {{ ucfirst(auth()->user()->role->value) }}.
+        </p>
     </div>
-</x-app-layout>
+@endsection
