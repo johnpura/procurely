@@ -1,8 +1,4 @@
-Procurely
-
-============================
-
-## About Procurely
+# Procurely
 
 Procurely is a vendor bidding platform that manages the full lifecycle of soliciting, comparing, and awarding vendor bids, from RFP creation through vendor selection.
 
