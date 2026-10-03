@@ -101,4 +101,15 @@ class Bid extends Model
             default => 'Closed',
         };
     }
+
+    public static function nextReferenceNumber(): string
+    {
+        $year = now()->year;
+
+        $last = static::where('reference_number', 'like', "BID-{$year}-%")
+            ->orderByDesc('reference_number')
+            ->value('reference_number');
+
+        return sprintf('BID-%d-%04d', $year, $last ? ((int) substr($last, -4)) + 1 : 1);
+    }
 }
