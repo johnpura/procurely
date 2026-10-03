@@ -5,6 +5,11 @@
 @section('content')
     @php $contact = $bid->contact(); @endphp
     <div class="mx-auto max-w-4xl px-4 pt-10 sm:px-6">
+        @isset($preview)
+            <div class="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+                Preview for staff. Draft bids are not public, and document links only work once the bid is published.
+            </div>
+        @endisset
         <a href="{{ route('bids.open') }}" class="text-sm text-gray-500 hover:text-gray-800">&larr; All bids</a>
 
         <div class="mt-3 flex flex-wrap items-center gap-3">

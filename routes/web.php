@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BidManageController; 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicBidController;
 use App\Http\Controllers\StaffController;
@@ -31,5 +32,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+Route::middleware(['auth', 'verified'])
+    ->prefix('manage/bids')
+    ->name('manage.bids.')
+    ->where(['bid' => '[A-Za-z0-9._-]+'])
+    ->group(function () {
+        Route::get('/', [BidManageController::class, 'index'])->name('index');
+        Route::get('create', [BidManageController::class, 'create'])->name('create');
+        Route::post('/', [BidManageController::class, 'store'])->name('store');
+        Route::get('{bid}/edit', [BidManageController::class, 'edit'])->name('edit');
+        Route::put('{bid}', [BidManageController::class, 'update'])->name('update');
+        Route::delete('{bid}', [BidManageController::class, 'destroy'])->name('destroy');
+        Route::get('{bid}/preview', [BidManageController::class, 'preview'])->name('preview');
+        Route::post('{bid}/publish', [BidManageController::class, 'publish'])->name('publish');
+        Route::post('{bid}/cancel', [BidManageController::class, 'cancel'])->name('cancel');
+        Route::post('{bid}/award', [BidManageController::class, 'award'])->name('award');
+        Route::post('{bid}/documents', [BidManageController::class, 'storeDocument'])->name('documents.store');
+        Route::delete('{bid}/documents/{document}', [BidManageController::class, 'destroyDocument'])->name('documents.destroy');
+    });
 
 require __DIR__.'/auth.php';
