@@ -57,9 +57,9 @@
     @mouseleave="$store.sidebar.setHovered(false)">
     <!-- Logo Section -->
     <div class="pt-8 pb-7 flex items-center gap-2" :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'justify-center' : 'justify-between'">
-        <a href="{{ route('dashboard') }}" class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-            <span class="hidden [.sidebar-expanded_&]:inline">Procurely</span>
-            <span class="inline text-brand-500 [.sidebar-expanded_&]:hidden">P</span>
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+            <img src="/images/logo/procurely-icon.svg" alt="" class="h-9 w-9">
+            <span class="hidden text-xl font-bold tracking-tight text-gray-900 dark:text-white [.sidebar-expanded_&]:inline">Procurely</span>
         </a>
     </div>
 

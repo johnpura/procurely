@@ -7,13 +7,15 @@
 
     <title>{{ config('app.name') }}</title>
 
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-800 antialiased">
     <div class="flex min-h-screen items-center justify-center px-4 py-12">
         <div class="w-full max-w-md">
             <div class="mb-6 text-center">
-                <a href="/" class="text-2xl font-bold tracking-tight text-gray-900">{{ config('app.name') }}</a>
+                <a href="/" class="text-7xl font-bold tracking-tight text-gray-900">{{ config('app.name') }}</a>
             </div>
 
             <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-sm sm:p-8">
