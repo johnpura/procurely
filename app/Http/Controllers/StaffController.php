@@ -15,7 +15,7 @@ class StaffController extends Controller
     public function index(): View
     {
         return view('staff.index', [
-            'users' => User::orderBy('name')->get(),
+            'users' => User::withTrashed()->with('creator')->orderBy('name')->get(),
         ]);
     }
 
@@ -39,6 +39,7 @@ class StaffController extends Controller
         $user->password = $validated['password'];
         $user->role = Role::from($validated['role']);
         $user->email_verified_at = now();
+        $user->created_by = $request->user()->id;
         $user->save();
 
         return redirect()->route('staff.index')->with('status', 'User created.');

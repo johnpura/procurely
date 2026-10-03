@@ -25,6 +25,9 @@
                         <th class="px-6 py-3 font-medium">Name</th>
                         <th class="px-6 py-3 font-medium">Email</th>
                         <th class="px-6 py-3 font-medium">Role</th>
+                        <th class="px-6 py-3 font-medium">Status</th>
+                        <th class="px-6 py-3 font-medium">Created</th>
+                        <th class="px-6 py-3 font-medium">Created by</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-800 dark:text-white/90">
@@ -33,6 +36,17 @@
                             <td class="px-6 py-3">{{ $user->name }}</td>
                             <td class="px-6 py-3">{{ $user->email }}</td>
                             <td class="px-6 py-3">{{ ucfirst($user->role->value) }}</td>
+                            <td class="px-6 py-3">
+                                @if ($user->trashed())
+                                    Former
+                                @elseif ($user->is_active)
+                                    Active
+                                @else
+                                    Disabled
+                                @endif
+                            </td>
+                            <td class="px-6 py-3">{{ $user->created_at->format('M j, Y') }}</td>
+                            <td class="px-6 py-3">{{ $user->creator?->name ?? '-' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
