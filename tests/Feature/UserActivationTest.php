@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Bid;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -81,7 +82,7 @@ class UserActivationTest extends TestCase
     public function test_a_departed_assignee_falls_back_to_the_department_contact(): void
     {
         $assignee = User::factory()->create(['name' => 'Pat Lee']);
-        $bid = \App\Models\Bid::factory()->open()->create();
+        $bid = Bid::factory()->open()->create();
         $bid->assigned_to = $assignee->id;
         $bid->save();
 

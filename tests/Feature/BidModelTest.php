@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Bid;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -42,7 +43,7 @@ class BidModelTest extends TestCase
 
     public function test_contact_uses_assigned_user_or_falls_back_to_the_department(): void
     {
-        $user = \App\Models\User::factory()->create(['name' => 'Pat Lee', 'phone' => '(555) 555-0199']);
+        $user = User::factory()->create(['name' => 'Pat Lee', 'phone' => '(555) 555-0199']);
 
         $assigned = Bid::factory()->open()->create();
         $assigned->assigned_to = $user->id;
