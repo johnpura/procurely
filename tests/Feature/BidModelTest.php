@@ -39,4 +39,19 @@ class BidModelTest extends TestCase
     {
         $this->assertSame('reference_number', (new Bid)->getRouteKeyName());
     }
+
+    public function test_contact_uses_assigned_user_or_falls_back_to_the_department(): void
+    {
+        $user = \App\Models\User::factory()->create(['name' => 'Pat Lee', 'phone' => '(555) 555-0199']);
+
+        $assigned = Bid::factory()->open()->create();
+        $assigned->assigned_to = $user->id;
+        $assigned->save();
+
+        $this->assertSame('Pat Lee', $assigned->contact()['name']);
+        $this->assertSame('(555) 555-0199', $assigned->contact()['phone']);
+
+        $unassigned = Bid::factory()->open()->create();
+        $this->assertSame(config('procurely.contact.name'), $unassigned->contact()['name']);
+    }
 }

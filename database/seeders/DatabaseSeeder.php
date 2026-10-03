@@ -22,13 +22,16 @@ class DatabaseSeeder extends Seeder
         $admin->password = 'secret';
         $admin->role = Role::Admin;
         $admin->email_verified_at = now();
+        $admin->phone = '(555) 555-0101';
         $admin->save();
 
         if (app()->environment('local')) {
-            Bid::factory()->count(4)->open()->create();
-            Bid::factory()->count(3)->closed()->create();
-            Bid::factory()->count(2)->awarded()->create();
-            Bid::factory()->cancelled()->create();
+            $make = fn ($factory) => $factory->state(['assigned_to' => $admin->id]);
+
+            $make(Bid::factory()->count(4)->open())->create();
+            $make(Bid::factory()->count(3)->closed())->create();
+            $make(Bid::factory()->count(2)->awarded())->create();
+            $make(Bid::factory()->cancelled())->create();
             Bid::factory()->count(2)->create();
         }
     }

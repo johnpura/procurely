@@ -15,9 +15,6 @@ class BidFactory extends Factory
             'department' => fake()->randomElement(['Public Works', 'Information Technology', 'Parks', 'Finance']),
             'description' => fake()->paragraphs(2, true),
             'status' => BidStatus::Draft,
-            'contact_name' => fake()->name(),
-            'contact_email' => fake()->safeEmail(),
-            'contact_phone' => fake()->numerify('(###) ###-####'),
         ];
     }
 

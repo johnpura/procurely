@@ -15,7 +15,6 @@ class Bid extends Model
 
     protected $fillable = [
         'reference_number', 'title', 'department', 'description', 'closes_at',
-        'contact_name', 'contact_email', 'contact_phone',
     ];
 
     protected function casts(): array
@@ -41,7 +40,27 @@ class Bid extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by')->withTrashed();
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function contact(): array
+    {
+        $default = config('procurely.contact');
+
+        $user = $this->assignee;
+        $usable = $user && $user->is_active;
+
+        /** Public contact: the assigned user, else the department default. */
+        return [
+            'name' => $this->assignee?->name ?? $default['name'],
+            'email' => $this->assignee?->email ?? $default['email'],
+            'phone' => $this->assignee?->phone ?: $default['phone'],
+        ];
     }
 
     /** Anything the public may see: everything except drafts. */

@@ -20,12 +20,10 @@ return new class extends Migration
             $table->string('status')->default('draft')->index();
             $table->dateTime('published_at')->nullable();
             $table->dateTime('closes_at')->nullable()->index();
-            $table->string('contact_name')->nullable();
-            $table->string('contact_email')->nullable();
-            $table->string('contact_phone')->nullable();
             $table->string('awarded_to')->nullable();
             $table->decimal('award_amount', 12, 2)->nullable();
             $table->date('awarded_at')->nullable();
+            $table->foreignId('assigned_to')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
