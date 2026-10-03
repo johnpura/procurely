@@ -17,12 +17,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::firstOrNew(['email' => 'admin@procurely.com']);
+        $password = config('procurely.admin.password');
+
+        if (! $password) {
+            if (! app()->environment('local')) {
+                $this->command->error('Set ADMIN_PASSWORD before seeding outside the local environment.');
+
+                return;
+            }
+
+            $password = 'password';
+        }
+
+        $admin = User::firstOrNew(['email' => config('procurely.admin.email')]);
         $admin->name = 'Admin';
-        $admin->password = 'secret';
+        $admin->password = $password;
         $admin->role = Role::Admin;
-        $admin->email_verified_at = now();
         $admin->phone = '(555) 555-0101';
+        $admin->email_verified_at = now();
         $admin->save();
 
         if (app()->environment('local')) {
