@@ -55,7 +55,7 @@ php artisan migrate --force
 REMOTE
 
 step "Copying built assets"
-rsync -az --delete -e "ssh $SSH_OPTS" public/build/ "$SERVER:$APP_DIR/public/build/"
+rsync -rlz --no-perms --no-owner --no-group --omit-dir-times --delete -e "ssh $SSH_OPTS" public/build/ "$SERVER:$APP_DIR/public/build/"
 
 step "Caching and going live"
 ssh $SSH_OPTS "$SERVER" "APP_DIR='$APP_DIR' bash -s" <<'REMOTE'
