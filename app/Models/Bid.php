@@ -117,4 +117,10 @@ class Bid extends Model
 
         return sprintf('BID-%d-%04d', $year, $last ? ((int) substr($last, -4)) + 1 : 1);
     }
+
+    public function awardedResponse(): BelongsTo
+    {
+        return $this->belongsTo(BidResponse::class, 'awarded_response_id');
+    }
+
 }
