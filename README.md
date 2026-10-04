@@ -34,11 +34,11 @@ Open http://localhost. Seeding in the local environment creates an admin account
 
 ## Deploying
 
-    ./deploy.sh [--skip-tests]
+Create a `deploy.sh` script and place it in the project root.
 
-Run it on the developer machine. It checks that the repo is clean and pushed, runs the tests, builds the assets (the server's Node is too old to build them), puts the site in maintenance mode, pulls, installs, migrates, copies public/build, caches, brings the site back up, and smoke-tests /login.
+Run it on the developer machine. It checks that the repo is clean and pushed, runs the tests, builds the assets, puts the site in maintenance mode, pulls, installs, migrates, copies public/build, caches, brings the site back up, and smoke-tests /login.
 
-Before the first seed on a new server, set ADMIN_EMAIL and ADMIN_PASSWORD in .env, run `php artisan db:seed --force`, then remove ADMIN_PASSWORD. Never edit tracked files on the server.
+Before the first seed on a new server, set ADMIN_EMAIL and ADMIN_PASSWORD in .env, run `php artisan db:seed --force`, then remove ADMIN_PASSWORD.
 
 ## Configuration
 
