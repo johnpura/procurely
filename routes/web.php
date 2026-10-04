@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VendorResponseController;
 use App\Http\Controllers\BidManageController; 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicBidController;
@@ -12,6 +13,12 @@ Route::prefix('bids')->name('bids.')->group(function () {
     Route::get('open', [PublicBidController::class, 'open'])->name('open');
     Route::get('closed', [PublicBidController::class, 'closed'])->name('closed');
     Route::get('search', [PublicBidController::class, 'search'])->name('search');
+    Route::get('{reference}/respond', [VendorResponseController::class, 'create'])
+        ->where('reference', '[A-Za-z0-9._-]+')->name('respond');
+    Route::post('{reference}/respond', [VendorResponseController::class, 'store'])
+        ->where('reference', '[A-Za-z0-9._-]+')->middleware('throttle:5,10')->name('respond.store');
+    Route::get('{reference}/respond/received', [VendorResponseController::class, 'received'])
+        ->where('reference', '[A-Za-z0-9._-]+')->name('respond.received');
     Route::get('{reference}', [PublicBidController::class, 'show'])
         ->where('reference', '[A-Za-z0-9._-]+')->name('show');
     Route::get('{reference}/documents/{document}', [PublicBidController::class, 'document'])

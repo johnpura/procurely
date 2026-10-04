@@ -10,6 +10,9 @@
                 Preview for staff. Draft bids are not public, and document links only work once the bid is published.
             </div>
         @endisset
+        @if (session('error'))
+            <div class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-800">{{ session('error') }}</div>
+        @endif
         <a href="{{ route('bids.open') }}" class="text-sm text-gray-500 hover:text-gray-800">&larr; All bids</a>
 
         <div class="mt-3 flex flex-wrap items-center gap-3">
@@ -55,8 +58,14 @@
             <p class="mt-3 text-sm text-gray-500">No documents have been posted.</p>
         @endforelse
 
+        @if ($bid->isOpen() && empty($preview))
+            <a href="{{ route('bids.respond', $bid->reference_number) }}" class="mt-10 inline-block rounded-lg bg-brand-500 px-6 py-3 text-sm font-medium text-white hover:bg-brand-600">Submit a response online</a>
+        @endif
         <h2 class="mt-10 text-xl font-bold tracking-tight text-gray-900">How to respond</h2>
         <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-700">
+            @if ($bid->isOpen() && empty($preview))
+                <li>Online, using the "Submit a response online" button above</li>
+            @endif
             <li>By email to <a href="mailto:{{ $contact['email'] }}" class="text-brand-500">{{ $contact['email'] }}</a></li>
             <li>By mail or in person: {{ config('procurely.contact.address') }}</li>
         </ul>
