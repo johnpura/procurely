@@ -48,6 +48,11 @@ class Bid extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    public function responses(): HasMany
+    {
+        return $this->hasMany(BidResponse::class);
+    }
+
     public function contact(): array
     {
         $default = config('procurely.contact');
