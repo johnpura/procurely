@@ -79,6 +79,28 @@
             @endcan
         </div>
 
+        @canany(['viewResponses', 'logResponse'], $bid)
+            @php $responseCount = $bid->responses()->count(); @endphp
+            <div class="{{ $card }}">
+                <h4 class="mb-2 font-semibold text-gray-800 dark:text-white/90">Responses</h4>
+
+                @can('viewResponses', $bid)
+                    <p class="text-sm text-gray-700 dark:text-gray-300">
+                        {{ $responseCount }} received.
+                        <a href="{{ route('manage.bids.responses.index', $bid) }}" class="text-brand-500 hover:text-brand-600">Open responses</a>
+                    </p>
+                @else
+                    <p class="text-sm text-gray-700 dark:text-gray-300">
+                        {{ $responseCount }} received so far. Details stay sealed until {{ $bid->closes_at?->format('M j, Y g:i A T') }}.
+                    </p>
+                @endcan
+
+                @can('logResponse', $bid)
+                    <a href="{{ route('manage.bids.responses.create', $bid) }}" class="mt-3 inline-block text-sm text-brand-500 hover:text-brand-600">Log a response received by email, mail or in person</a>
+                @endcan
+            </div>
+        @endcanany
+
         @canany(['publish', 'cancel', 'award', 'delete'], $bid)
             <div class="{{ $card }} space-y-6">
                 <h4 class="font-semibold text-gray-800 dark:text-white/90">Actions</h4>

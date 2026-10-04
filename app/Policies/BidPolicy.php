@@ -58,4 +58,17 @@ class BidPolicy
     {
         return $user->isAdmin();
     }
+
+    public function viewResponses(User $user, Bid $bid): bool
+    {
+        return $bid->status !== BidStatus::Draft
+            && $bid->closes_at?->isPast()
+            && ($user->isAdmin() || $bid->assigned_to === $user->id);
+    }
+
+    public function logResponse(User $user, Bid $bid): bool
+    {
+        return $bid->status === BidStatus::Published
+            && ($user->isAdmin() || $bid->assigned_to === $user->id);
+    }
 }
