@@ -114,14 +114,37 @@
                 @endcan
 
                 @can('award', $bid)
-                    <form method="POST" action="{{ route('manage.bids.award', $bid) }}" class="grid gap-3 sm:grid-cols-3">
+                    @php
+                        $responders = $bid->responses()->orderBy('vendor_name')->get()
+                            ->each(fn ($r) => $r->setRelation('bid', $bid))
+                            ->reject(fn ($r) => $r->isLate());
+                    @endphp
+                    <form method="POST" action="{{ route('manage.bids.award', $bid) }}" class="grid gap-3 sm:grid-cols-3"
+                        x-data="{ other: {{ $responders->isEmpty() || old('awarded_to') ? 'true' : 'false' }} }">
                         @csrf
                         <div class="sm:col-span-3"><p class="text-sm text-gray-500">The bid has closed. Record the award.</p></div>
-                        <div>
-                            <label for="awarded_to" class="{{ $label }}">Awarded to</label>
-                            <input id="awarded_to" name="awarded_to" value="{{ old('awarded_to') }}" required class="{{ $input }}">
+
+                        <div class="sm:col-span-3">
+                            <label for="awarded_response_id" class="{{ $label }}">Awarded to</label>
+                            <select id="awarded_response_id" name="awarded_response_id" class="{{ $input }}"
+                                    x-on:change="other = $event.target.value === ''">
+                                @foreach ($responders as $r)
+                                    <option value="{{ $r->id }}" @selected((string) old('awarded_response_id') === (string) $r->id)>
+                                        {{ $r->vendor_name }} ({{ $r->receiptLabel() }})
+                                    </option>
+                                @endforeach
+                                <option value="" @selected($responders->isEmpty() || old('awarded_to'))>Other vendor (type a name)</option>
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">On-time responses only. Late responses cannot be awarded.</p>
+                            <x-input-error :messages="$errors->get('awarded_response_id')" class="mt-2" />
+                        </div>
+
+                        <div class="sm:col-span-3" x-show="other" x-cloak>
+                            <label for="awarded_to" class="{{ $label }}">Vendor name</label>
+                            <input id="awarded_to" name="awarded_to" value="{{ old('awarded_to') }}" x-bind:disabled="! other" class="{{ $input }}">
                             <x-input-error :messages="$errors->get('awarded_to')" class="mt-2" />
                         </div>
+
                         <div>
                             <label for="award_amount" class="{{ $label }}">Amount</label>
                             <input id="award_amount" name="award_amount" inputmode="decimal" value="{{ old('award_amount') }}" class="{{ $input }}">

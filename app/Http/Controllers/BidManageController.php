@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Validation\Rule;
 
 class BidManageController extends Controller
 {
@@ -145,13 +146,29 @@ class BidManageController extends Controller
         Gate::authorize('award', $bid);
 
         $data = $request->validate([
-            'awarded_to' => ['required', 'string', 'max:255'],
+            'awarded_response_id' => ['nullable', Rule::exists('bid_responses', 'id')->where('bid_id', $bid->id)],
+            'awarded_to' => ['required_without:awarded_response_id', 'nullable', 'string', 'max:255'],
             'award_amount' => ['nullable', 'numeric', 'min:0', 'max:9999999999.99'],
             'awarded_at' => ['required', 'date'],
         ]);
 
+        $response = filled($data['awarded_response_id'] ?? null)
+            ? $bid->responses()->findOrFail($data['awarded_response_id'])
+            : null;
+
+        if ($response) {
+            $response->setRelation('bid', $bid);
+
+            if ($response->isLate()) {
+                return back()
+                    ->withErrors(['awarded_response_id' => 'A late response cannot be awarded.'])
+                    ->withInput();
+            }
+        }
+
         $bid->status = BidStatus::Awarded;
-        $bid->awarded_to = $data['awarded_to'];
+        $bid->awarded_to = $response?->vendor_name ?? $data['awarded_to'];
+        $bid->awarded_response_id = $response?->id;
         $bid->award_amount = $data['award_amount'] ?? null;
         $bid->awarded_at = $data['awarded_at'];
         $bid->save();

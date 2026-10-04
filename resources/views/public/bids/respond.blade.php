@@ -3,6 +3,11 @@
 @section('title', 'Respond to '.$bid->reference_number)
 
 @section('content')
+    @push('scripts')
+        @if (config('services.turnstile.site_key'))
+            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+        @endif
+    @endpush
     @php
         $input = 'h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10';
         $label = 'mb-1 block text-sm font-medium text-gray-700';
@@ -61,7 +66,9 @@
                 <input type="checkbox" name="acknowledge" value="1" required class="mt-0.5 rounded border-gray-300 text-brand-500">
                 <span>I understand that this response cannot be changed or withdrawn after it is submitted.</span>
             </label>
-
+            @if (config('services.turnstile.site_key'))
+                <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}"></div>
+            @endif
             <button type="submit" class="rounded-lg bg-brand-500 px-6 py-3 text-sm font-medium text-white hover:bg-brand-600">Submit response</button>
         </form>
     </div>

@@ -40,6 +40,25 @@ Run it on the developer machine. It checks that the repo is clean and pushed, ru
 
 Before the first seed on a new server, set ADMIN_EMAIL and ADMIN_PASSWORD in .env, run `php artisan db:seed --force`, then remove ADMIN_PASSWORD.
 
+## Production settings
+
+PHP (create `/etc/php/<version>/apache2/conf.d/99-procurely.ini`, then reload Apache):
+
+    upload_max_filesize = 25M
+    post_max_size = 110M
+    max_file_uploads = 20
+    max_input_time = 300
+    max_execution_time = 120
+    memory_limit = 256M
+
+An online response can contain up to 5 PDFs of 20 MB each, so one request can reach about 100 MB.
+
+Mail (.env): MAIL_MAILER, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_ENCRYPTION, MAIL_FROM_ADDRESS, MAIL_FROM_NAME. Confirmation emails and password resets depend on it. Test with:
+
+    php artisan tinker --execute="Mail::raw('Test', fn(\$m) => \$m->to('you@example.com')->subject('Procurely test'));"
+
+After deploying, test an upload of a large PDF through the vendor form on the live site.
+
 ## Configuration
 
 The organization name, department and default contact are in config/procurely.php. Set APP_TIMEZONE to the city's time zone so bid closing times are correct.

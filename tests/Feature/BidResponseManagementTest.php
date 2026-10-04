@@ -177,4 +177,45 @@ class BidResponseManagementTest extends TestCase
 
         $this->assertDatabaseCount('bid_responses', 0);
     }
+
+    public function test_a_bid_can_be_awarded_to_a_vendor_who_responded(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $bid = Bid::factory()->closed()->create();
+        $response = BidResponse::factory()->for($bid)->create(['vendor_name' => 'Acme Paving', 'submitted_at' => $bid->closes_at->copy()->subDay()]);
+
+        $this->actingAs($admin)->post("/manage/bids/{$bid->reference_number}/award", [
+            'awarded_response_id' => $response->id,
+            'award_amount' => '1000',
+            'awarded_at' => now()->toDateString(),
+        ])->assertRedirect();
+
+        $bid->refresh();
+        $this->assertSame('Acme Paving', $bid->awarded_to);
+        $this->assertSame($response->id, $bid->awarded_response_id);
+    }
+
+    public function test_late_responses_and_responses_from_other_bids_cannot_be_awarded(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $bid = Bid::factory()->closed()->create();
+        $late = BidResponse::factory()->for($bid)->create(['submitted_at' => $bid->closes_at->copy()->addHour()]);
+        $foreign = BidResponse::factory()->for(Bid::factory()->closed()->create())->create();
+        $url = "/manage/bids/{$bid->reference_number}/award";
+        $base = ['awarded_at' => now()->toDateString()];
+
+        $this->actingAs($admin)->post($url, ['awarded_response_id' => $late->id] + $base)->assertSessionHasErrors('awarded_response_id');
+        $this->actingAs($admin)->post($url, ['awarded_response_id' => $foreign->id] + $base)->assertSessionHasErrors('awarded_response_id');
+
+        $this->assertNotSame(\App\Enums\BidStatus::Awarded, $bid->fresh()->status);
+    }
+
+    public function test_a_vendor_name_is_required_when_no_response_is_chosen(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $bid = Bid::factory()->closed()->create();
+
+        $this->actingAs($admin)->post("/manage/bids/{$bid->reference_number}/award", ['awarded_at' => now()->toDateString()])
+            ->assertSessionHasErrors('awarded_to');
+    }
 }

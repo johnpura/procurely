@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\TurnstileToken;
 
 class VendorResponseRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class VendorResponseRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'vendor_name' => ['required', 'string', 'max:255'],
             'contact_name' => ['required', 'string', 'max:255'],
             'contact_email' => ['required', 'email', 'max:255'],
@@ -24,6 +25,12 @@ class VendorResponseRequest extends FormRequest
             'acknowledge' => ['accepted'],
             'website' => ['prohibited'],
         ];
+
+        if (TurnstileToken::enabled()) {
+            $rules['cf-turnstile-response'] = ['required', new TurnstileToken];
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -34,6 +41,7 @@ class VendorResponseRequest extends FormRequest
             'files.*.mimes' => 'Only PDF files are accepted.',
             'files.*.max' => 'Each file must be 20 MB or smaller.',
             'acknowledge.accepted' => 'Please confirm that you understand the response cannot be changed once submitted.',
+            'cf-turnstile-response.required' => 'Please complete the verification challenge.',
         ];
     }
 }

@@ -64,7 +64,7 @@
         <h2 class="mt-10 text-xl font-bold tracking-tight text-gray-900">How to respond</h2>
         <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-700">
             @if ($bid->isOpen() && empty($preview))
-                <li>Online, using the "Submit a response online" button above</li>
+                <li>Online, using the "Submit a response online" button above. You will receive a receipt code by email.</li>
             @endif
             <li>By email to <a href="mailto:{{ $contact['email'] }}" class="text-brand-500">{{ $contact['email'] }}</a></li>
             <li>By mail or in person: {{ config('procurely.contact.address') }}</li>

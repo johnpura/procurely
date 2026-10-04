@@ -10,6 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 use Tests\TestCase;
 
 class VendorResponseTest extends TestCase
@@ -147,5 +149,73 @@ class VendorResponseTest extends TestCase
             ->assertRedirect("/bids/{$bid->reference_number}/respond/received");
 
         $this->assertDatabaseCount('bid_responses', 1);
+    }
+
+    public function test_a_missing_token_is_rejected_when_turnstile_is_configured(): void
+    {
+        Storage::fake('local');
+        config(['services.turnstile.secret_key' => 'secret']);
+        $bid = Bid::factory()->open()->create();
+
+        $this->post("/bids/{$bid->reference_number}/respond", $this->payload())
+            ->assertSessionHasErrors('cf-turnstile-response');
+
+        $this->assertDatabaseCount('bid_responses', 0);
+    }
+
+    public function test_a_valid_token_is_accepted(): void
+    {
+        Storage::fake('local');
+        Mail::fake();
+        config(['services.turnstile.secret_key' => 'secret']);
+        Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => true])]);
+        $bid = Bid::factory()->open()->create();
+
+        $this->post("/bids/{$bid->reference_number}/respond", $this->payload(['cf-turnstile-response' => 'token']))
+            ->assertRedirect("/bids/{$bid->reference_number}/respond/received");
+
+        Http::assertSent(fn ($request) => $request['secret'] === 'secret' && $request['response'] === 'token');
+        $this->assertDatabaseCount('bid_responses', 1);
+    }
+
+    public function test_a_failed_verification_rejects_the_submission(): void
+    {
+        Storage::fake('local');
+        config(['services.turnstile.secret_key' => 'secret']);
+        Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => false])]);
+        $bid = Bid::factory()->open()->create();
+
+        $this->post("/bids/{$bid->reference_number}/respond", $this->payload(['cf-turnstile-response' => 'bad']))
+            ->assertSessionHasErrors('cf-turnstile-response');
+
+        $this->assertDatabaseCount('bid_responses', 0);
+    }
+
+    public function test_a_cloudflare_outage_fails_closed(): void
+    {
+        Storage::fake('local');
+        config(['services.turnstile.secret_key' => 'secret']);
+        Http::fake(fn () => throw new ConnectionException('timeout'));
+        $bid = Bid::factory()->open()->create();
+
+        $this->post("/bids/{$bid->reference_number}/respond", $this->payload(['cf-turnstile-response' => 'token']))
+            ->assertSessionHasErrors('cf-turnstile-response');
+
+        $this->assertDatabaseCount('bid_responses', 0);
+    }
+
+    public function test_production_without_keys_refuses_submissions(): void
+    {
+        Storage::fake('local');
+        $this->app->detectEnvironment(fn () => 'production');
+        $this->withSession(['_token' => 'csrf-test']);
+        $bid = Bid::factory()->open()->create();
+
+        $this->post("/bids/{$bid->reference_number}/respond", $this->payload([
+            '_token' => 'csrf-test',
+            'cf-turnstile-response' => 'token',
+        ]))->assertSessionHasErrors('cf-turnstile-response');
+
+        $this->assertDatabaseCount('bid_responses', 0);
     }
 }
