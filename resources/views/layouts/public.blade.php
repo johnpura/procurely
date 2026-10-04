@@ -6,6 +6,7 @@
     <title>@yield('title', 'Bids') | {{ config('procurely.organization') }}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('scripts')
 </head>
 <body class="flex min-h-screen flex-col bg-white text-gray-800 antialiased">
 
