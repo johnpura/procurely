@@ -7,6 +7,7 @@ use App\Http\Controllers\BidManageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicBidController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicBidController::class, 'home'])->name('home');
@@ -27,9 +28,7 @@ Route::prefix('bids')->name('bids.')->group(function () {
         ->where('reference', '[A-Za-z0-9._-]+')->name('documents.download');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'role:admin'])->prefix('staff')->name('staff.')->whereNumber('user')->group(function () {
     Route::get('/', [StaffController::class, 'index'])->name('index');
