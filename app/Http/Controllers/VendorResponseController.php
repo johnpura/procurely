@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Audit;
 use App\Enums\ResponseMethod;
 use App\Http\Requests\VendorResponseRequest;
 use App\Mail\ResponseReceived;
@@ -56,6 +57,10 @@ class VendorResponseController extends Controller
 
             return $response;
         });
+
+        Audit::record('response.submitted', "Online response {$response->receiptLabel()} received for {$bid->reference_number}", $response, $bid, [
+            'files' => $response->files()->count(),
+        ], actor: 'Vendor: '.$response->vendor_name);
 
         $emailed = false;
         try {

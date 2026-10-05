@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuditLogController; 
 use App\Http\Controllers\BidResponseController; 
 use App\Http\Controllers\VendorResponseController;
 use App\Http\Controllers\BidManageController; 
@@ -42,6 +43,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('staff')->name('staff.')->wher
     Route::post('{user}/restore', [StaffController::class, 'restore'])->withTrashed()->name('restore');
     Route::post('{user}/reset-link', [StaffController::class, 'sendResetLink'])->name('reset-link');
 });
+
+Route::middleware(['auth', 'verified', 'role:admin'])->get('/audit', [AuditLogController::class, 'index'])->name('audit.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

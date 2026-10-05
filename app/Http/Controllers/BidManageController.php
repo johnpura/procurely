@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Audit;
 use App\Enums\BidStatus;
 use App\Http\Requests\BidRequest;
 use App\Models\Bid;
@@ -67,6 +68,8 @@ class BidManageController extends Controller
 
         $bid->save();
 
+        Audit::record('bid.created', "Created draft {$bid->reference_number}: {$bid->title}", $bid);
+
         return redirect()->route('manage.bids.edit', $bid)->with('status', 'Draft created.');
     }
 
@@ -91,7 +94,13 @@ class BidManageController extends Controller
             $bid->assigned_to = $data['assigned_to'] ?? null;
         }
 
+        $changes = Audit::changes($bid);
+
         $bid->save();
+
+        if ($changes) {
+            Audit::record('bid.updated', "Edited {$bid->reference_number} (".implode(', ', array_keys($changes)).')', $bid, properties: ['changes' => $changes]);
+        }
 
         return redirect()->route('manage.bids.edit', $bid)->with('status', 'Bid saved.');
     }
@@ -103,6 +112,8 @@ class BidManageController extends Controller
         foreach ($bid->documents as $document) {
             Storage::disk('local')->delete($document->path);
         }
+
+        Audit::record('bid.deleted', "Deleted draft {$bid->reference_number}: {$bid->title}", $bid);
 
         $bid->delete();
 
@@ -128,6 +139,8 @@ class BidManageController extends Controller
         $bid->published_at = now();
         $bid->save();
 
+        Audit::record('bid.published', "Published {$bid->reference_number}", $bid, properties: ['closes_at' => $bid->closes_at->format('Y-m-d H:i:s')]);
+
         return redirect()->route('manage.bids.edit', $bid)->with('status', 'Bid published.');
     }
 
@@ -137,6 +150,8 @@ class BidManageController extends Controller
 
         $bid->status = BidStatus::Cancelled;
         $bid->save();
+
+        Audit::record('bid.cancelled', "Cancelled {$bid->reference_number}", $bid);
 
         return redirect()->route('manage.bids.edit', $bid)->with('status', 'Bid cancelled.');
     }
@@ -173,6 +188,12 @@ class BidManageController extends Controller
         $bid->awarded_at = $data['awarded_at'];
         $bid->save();
 
+        Audit::record('bid.awarded', "Awarded {$bid->reference_number} to {$bid->awarded_to}", $bid, properties: [
+            'awarded_to' => $bid->awarded_to,
+            'award_amount' => $bid->award_amount,
+            'awarded_response_id' => $bid->awarded_response_id,
+        ]);
+
         return redirect()->route('manage.bids.edit', $bid)->with('status', 'Award recorded.');
     }
 
@@ -194,6 +215,8 @@ class BidManageController extends Controller
             'size' => $file->getSize(),
         ]);
 
+        Audit::record('bid.document_added', "Added document {$file->getClientOriginalName()} to {$bid->reference_number}", $bid);
+
         return redirect()->route('manage.bids.edit', $bid)->with('status', 'Document added.');
     }
 
@@ -204,6 +227,8 @@ class BidManageController extends Controller
 
         Storage::disk('local')->delete($document->path);
         $document->delete();
+
+        Audit::record('bid.document_removed', "Removed document {$document->original_name} from {$bid->reference_number}", $bid);
 
         return redirect()->route('manage.bids.edit', $bid)->with('status', 'Document removed.');
     }
