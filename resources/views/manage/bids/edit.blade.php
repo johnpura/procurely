@@ -21,6 +21,9 @@
         <div class="flex flex-wrap items-center gap-3">
             <h3 class="text-xl font-semibold text-gray-800 dark:text-white/90">{{ $bid->reference_number }}</h3>
             <x-bid-status :bid="$bid" />
+            @if (auth()->user()->isAdmin())
+                <a href="{{ route('audit.index', ['bid' => $bid->reference_number]) }}" class="text-sm text-brand-500 hover:text-brand-600">History</a>
+            @endif
             <a href="{{ route('manage.bids.preview', $bid) }}" class="ml-auto text-sm text-brand-500 hover:text-brand-600">Preview public page</a>
         </div>
         <p class="text-sm text-gray-500 dark:text-gray-400">

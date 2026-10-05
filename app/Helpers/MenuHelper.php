@@ -47,10 +47,12 @@ class MenuHelper
             ['icon' => 'dashboard', 'name' => 'Dashboard', 'path' => '/dashboard'],
             ['icon' => 'user-profile', 'name' => 'Profile', 'path' => '/profile'],
             ['icon' => 'forms', 'name' => 'Bids', 'path' => '/manage/bids'],
+            ['icon' => 'pages', 'name' => 'Logs', 'path' => '/audit'],
         ];
 
         if (auth()->user()?->isAdmin()) {
             $items[] = ['icon' => 'tables', 'name' => 'Staff', 'path' => '/staff'];
+            $items[] = ['icon' => 'pages', 'name' => 'Audit log', 'path' => '/audit'];
         }
 
         return [

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Audit;
 use App\Enums\ResponseMethod;
 use App\Models\Bid;
 use App\Models\BidResponse;
@@ -25,6 +26,8 @@ class BidResponseController extends Controller
         $responses = $bid->responses()->withCount('files')->orderBy('submitted_at')->get();
         $responses->each->setRelation('bid', $bid);
 
+        Audit::record('responses.opened', "Opened the response list for {$bid->reference_number}", $bid, properties: ['count' => $responses->count()]);
+
         return view('manage.bids.responses.index', ['bid' => $bid, 'responses' => $responses]);
     }
 
@@ -32,6 +35,8 @@ class BidResponseController extends Controller
     {
         Gate::authorize('viewResponses', $bid);
         abort_unless($response->bid_id === $bid->id, 404);
+
+        Audit::record('response.viewed', "Viewed response {$response->receiptLabel()} ({$response->vendor_name}) to {$bid->reference_number}", $response, $bid);
 
         $response->load(['files', 'loggedBy'])->setRelation('bid', $bid);
 
@@ -43,6 +48,8 @@ class BidResponseController extends Controller
         Gate::authorize('viewResponses', $bid);
         abort_unless($response->bid_id === $bid->id && $file->bid_response_id === $response->id, 404);
         abort_unless(Storage::disk('local')->exists($file->path), 404);
+
+        Audit::record('response.file_downloaded', "Downloaded {$file->original_name} from response {$response->receiptLabel()} to {$bid->reference_number}", $response, $bid, ['file' => $file->original_name]);
 
         return Storage::disk('local')->download($file->path, $file->original_name);
     }
@@ -91,6 +98,11 @@ class BidResponseController extends Controller
 
             return $response;
         });
+
+        Audit::record('response.logged', "Logged {$response->method->label()} response {$response->receiptLabel()} from {$response->vendor_name} for {$bid->reference_number}", $response, $bid, [
+            'received_at' => $response->submitted_at->format('Y-m-d H:i:s'),
+            'late' => $response->setRelation('bid', $bid)->isLate(),
+        ]);
 
         return redirect()
             ->route('manage.bids.edit', $bid)

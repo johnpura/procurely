@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Audit;
 use App\Enums\Role;
 use App\Models\Bid;
 use App\Models\User;
@@ -72,6 +73,8 @@ class StaffController extends Controller
         $user->created_by = $request->user()->id;
         $user->save();
 
+        Audit::record('user.created', "Created {$user->name} ({$user->role->value})", $user);
+
         return redirect()->route('staff.index')->with('status', 'User created.');
     }
 
@@ -104,7 +107,12 @@ class StaffController extends Controller
 
         $user->fill(Arr::only($data, ['name', 'email', 'phone', 'job_title']));
         $user->role = $role;
+        $changes = Audit::changes($user);
         $user->save();
+
+        if ($changes) {
+            Audit::record('user.updated', "Edited {$user->name} (".implode(', ', array_keys($changes)).')', $user, properties: ['changes' => $changes]);
+        }
 
         return redirect()->route('staff.edit', $user)->with('status', 'User saved.');
     }
@@ -118,6 +126,8 @@ class StaffController extends Controller
         $user->is_active = false;
         $user->save();
 
+        Audit::record('user.disabled', "Disabled {$user->name}", $user);
+
         return back()->with('status', "{$user->name} is disabled and can no longer sign in.");
     }
 
@@ -125,6 +135,8 @@ class StaffController extends Controller
     {
         $user->is_active = true;
         $user->save();
+
+        Audit::record('user.enabled', "Enabled {$user->name}", $user);
 
         return back()->with('status', "{$user->name} is enabled.");
     }
@@ -137,12 +149,16 @@ class StaffController extends Controller
 
         $user->delete();
 
+        Audit::record('user.removed', "Removed {$user->name}", $user);
+
         return redirect()->route('staff.index')->with('status', "{$user->name} was removed. Restore them from the Former tab if needed.");
     }
 
     public function restore(User $user): RedirectResponse
     {
         $user->restore();
+
+        Audit::record('user.restored', "Restored {$user->name}", $user);
 
         return redirect()->route('staff.index')->with('status', "{$user->name} was restored.");
     }
@@ -157,9 +173,13 @@ class StaffController extends Controller
             return back()->with('error', 'The reset email could not be sent. Check the mail settings.');
         }
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', "A reset link was sent to {$user->email}.")
-            : back()->with('error', 'A reset link was sent recently. Wait a minute and try again.');
+        if ($status !== Password::RESET_LINK_SENT) {
+            return back()->with('error', 'A reset link was sent recently. Wait a minute and try again.');
+        }
+
+        Audit::record('user.reset_link_sent', "Sent a password reset link to {$user->name}", $user);
+
+        return back()->with('status', "A reset link was sent to {$user->email}.");
     }
 
     private function blockedAction(Request $request, User $user, string $verb): ?RedirectResponse
