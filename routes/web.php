@@ -30,10 +30,17 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth', 'role:admin'])->prefix('staff')->name('staff.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('staff')->name('staff.')->whereNumber('user')->group(function () {
     Route::get('/', [StaffController::class, 'index'])->name('index');
-    Route::get('/create', [StaffController::class, 'create'])->name('create');
+    Route::get('create', [StaffController::class, 'create'])->name('create');
     Route::post('/', [StaffController::class, 'store'])->name('store');
+    Route::get('{user}/edit', [StaffController::class, 'edit'])->name('edit');
+    Route::put('{user}', [StaffController::class, 'update'])->name('update');
+    Route::post('{user}/disable', [StaffController::class, 'disable'])->name('disable');
+    Route::post('{user}/enable', [StaffController::class, 'enable'])->name('enable');
+    Route::delete('{user}', [StaffController::class, 'destroy'])->name('destroy');
+    Route::post('{user}/restore', [StaffController::class, 'restore'])->withTrashed()->name('restore');
+    Route::post('{user}/reset-link', [StaffController::class, 'sendResetLink'])->name('reset-link');
 });
 
 Route::middleware('auth')->group(function () {
