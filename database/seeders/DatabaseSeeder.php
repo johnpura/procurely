@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
                 return;
             }
 
-            $password = 'password';
+            $password = 'New-Password-123';
         }
 
         $admin = User::firstOrNew(['email' => config('procurely.admin.email')]);

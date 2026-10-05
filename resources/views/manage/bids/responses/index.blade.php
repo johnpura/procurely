@@ -41,7 +41,7 @@
                             <td class="whitespace-nowrap px-6 py-3">
                                 {{ $r->submitted_at->format('M j, Y g:i A') }}
                                 @if ($r->isLate())
-                                    <span class="ml-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">Late</span>
+                                    <span class="ml-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700" role="alert">Late</span>
                                 @endif
                             </td>
                             <td class="px-6 py-3">{{ $r->files_count }}</td>

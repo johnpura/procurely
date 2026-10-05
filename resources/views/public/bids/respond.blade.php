@@ -22,7 +22,7 @@
         </div>
 
         @if ($errors->any())
-            <div class="mt-4 rounded-lg bg-red-50 p-4 text-sm text-red-800">
+            <div class="mt-4 rounded-lg bg-red-50 p-4 text-sm text-red-800" role="alert">
                 <p class="font-medium">Please fix the following:</p>
                 <ul class="mt-1 list-disc pl-5">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
             </div>
@@ -38,21 +38,21 @@
 
             <div>
                 <label for="vendor_name" class="{{ $label }}">Company name</label>
-                <input id="vendor_name" name="vendor_name" value="{{ old('vendor_name') }}" required class="{{ $input }}">
+                <input id="vendor_name" name="vendor_name" value="{{ old('vendor_name') }}" required class="{{ $input }}" autocomplete="organization">
             </div>
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <label for="contact_name" class="{{ $label }}">Contact name</label>
-                    <input id="contact_name" name="contact_name" value="{{ old('contact_name') }}" required class="{{ $input }}">
+                    <input id="contact_name" name="contact_name" value="{{ old('contact_name') }}" required class="{{ $input }}" autocomplete="name">
                 </div>
                 <div>
                     <label for="contact_phone" class="{{ $label }}">Phone (optional)</label>
-                    <input id="contact_phone" name="contact_phone" value="{{ old('contact_phone') }}" class="{{ $input }}">
+                    <input id="contact_phone" name="contact_phone" value="{{ old('contact_phone') }}" class="{{ $input }}" autocomplete="tel">
                 </div>
             </div>
             <div>
                 <label for="contact_email" class="{{ $label }}">Email (your receipt is sent here)</label>
-                <input id="contact_email" type="email" name="contact_email" value="{{ old('contact_email') }}" required class="{{ $input }}">
+                <input id="contact_email" type="email" name="contact_email" value="{{ old('contact_email') }}" required class="{{ $input }}" autocomplete="email">
             </div>
             <div>
                 <label for="cover_note" class="{{ $label }}">Cover note (optional)</label>

@@ -12,7 +12,7 @@
             <div class="flex flex-wrap items-center gap-3">
                 <h3 class="text-xl font-semibold text-gray-800 dark:text-white/90">{{ $response->vendor_name }}</h3>
                 @if ($response->isLate())
-                    <span class="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-700">Late</span>
+                    <span class="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-700" role="alert">Late</span>
                 @endif
             </div>
 

@@ -4,10 +4,10 @@
 
 @section('content')
     @if (session('status'))
-        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-green-500/15 dark:text-green-400">{{ session('status') }}</div>
+        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-green-500/15 dark:text-green-400" role="status">{{ session('status') }}</div>
     @endif
     @if (session('error'))
-        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700">{{ session('error') }}</div>
+        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700" role="alert">{{ session('error') }}</div>
     @endif
 
     <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">

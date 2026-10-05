@@ -7,7 +7,7 @@
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Response received</h1>
         <p class="mt-2 text-gray-600">Thank you. Your response to <strong>{{ $bid->reference_number }}</strong> has been recorded.</p>
 
-        <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-6 text-center">
+        <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-6 text-center" role="status">
             <p class="text-sm text-green-800">Your receipt code</p>
             <p class="mt-1 font-mono text-3xl font-bold tracking-widest text-green-900">{{ session('receipt') }}</p>
         </div>

@@ -1,12 +1,13 @@
 <div class="overflow-x-auto rounded-xl border border-gray-200">
     <table class="min-w-full text-left text-sm">
+        <caption class="sr-only">Bids with reference number, title, department, closing time and status</caption>
         <thead class="border-b border-gray-200 bg-gray-50 text-gray-500">
             <tr>
-                <th class="px-4 py-3 font-medium">Reference</th>
-                <th class="px-4 py-3 font-medium">Title</th>
-                <th class="px-4 py-3 font-medium">Department</th>
-                <th class="px-4 py-3 font-medium">Closes</th>
-                <th class="px-4 py-3 font-medium">Status</th>
+                <th scope="col" class="px-4 py-3 font-medium">Reference</th>
+                <th scope="col" class="px-4 py-3 font-medium">Title</th>
+                <th scope="col" class="px-4 py-3 font-medium">Department</th>
+                <th scope="col" class="px-4 py-3 font-medium">Closes</th>
+                <th scope="col" class="px-4 py-3 font-medium">Status</th>
             </tr>
         </thead>
         <tbody>

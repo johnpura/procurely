@@ -11,10 +11,10 @@
     @endphp
 
     @if (session('status'))
-        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-green-500/15 dark:text-green-400">{{ session('status') }}</div>
+        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-green-500/15 dark:text-green-400" role="status">{{ session('status') }}</div>
     @endif
     @if (session('error'))
-        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700">{{ session('error') }}</div>
+        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700" role="alert">{{ session('error') }}</div>
     @endif
 
     <div class="mb-4"><a href="{{ route('staff.index') }}" class="text-sm text-gray-500 hover:text-gray-800">&larr; Staff</a></div>
