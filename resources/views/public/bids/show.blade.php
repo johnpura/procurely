@@ -11,7 +11,7 @@
             </div>
         @endisset
         @if (session('error'))
-            <div class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-800">{{ session('error') }}</div>
+            <div class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-800" role="alert">{{ session('error') }}</div>
         @endif
         <a href="{{ route('bids.open') }}" class="text-sm text-gray-500 hover:text-gray-800">&larr; All bids</a>
 
@@ -46,7 +46,7 @@
                 </p>
             </div>
         @elseif ($bid->status === \App\Enums\BidStatus::Cancelled)
-            <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-900">This bid was cancelled.</div>
+            <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-900" role="alert">This bid was cancelled.</div>
         @endif
 
         <h2 class="mt-10 text-xl font-bold tracking-tight text-gray-900">Description</h2>
@@ -57,7 +57,7 @@
             <a href="{{ route('bids.documents.download', [$bid->reference_number, $doc]) }}"
                class="mt-3 flex items-center justify-between gap-3 rounded-lg border border-gray-200 px-4 py-3 text-sm hover:border-brand-500">
                 <span class="min-w-0 truncate font-medium text-gray-900">{{ $doc->name }}</span>
-                <span class="shrink-0 text-gray-500">{{ number_format($doc->size / 1024) }} KB</span>
+                <span class="shrink-0 text-gray-500">PDF, {{ number_format($doc->size / 1024) }} KB</span>
             </a>
         @empty
             <p class="mt-3 text-sm text-gray-500">No documents have been posted.</p>

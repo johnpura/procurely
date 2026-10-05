@@ -11,10 +11,10 @@
     @endphp
 
     @if (session('status'))
-        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-green-500/15 dark:text-green-400">{{ session('status') }}</div>
+        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-green-500/15 dark:text-green-400" role="status">{{ session('status') }}</div>
     @endif
     @if ($errors->has('publish'))
-        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700">{{ $errors->first('publish') }}</div>
+        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700" role="alert">{{ $errors->first('publish') }}</div>
     @endif
 
     <div class="max-w-3xl space-y-6">

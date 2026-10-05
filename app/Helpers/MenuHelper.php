@@ -45,7 +45,6 @@ class MenuHelper
     {
         $items = [
             ['icon' => 'dashboard', 'name' => 'Dashboard', 'path' => '/dashboard'],
-            ['icon' => 'user-profile', 'name' => 'Profile', 'path' => '/profile'],
             ['icon' => 'forms', 'name' => 'Bids', 'path' => '/manage/bids'],
         ];
 

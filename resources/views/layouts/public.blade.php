@@ -9,6 +9,7 @@
     @stack('scripts')
 </head>
 <body class="flex min-h-screen flex-col bg-white text-gray-800 antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-brand-500">Skip to main content</a>
 
     <header class="border-b border-gray-200">
         <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4 sm:px-6">
@@ -20,9 +21,11 @@
                 </span>
             </a>
 
-            <nav class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <nav class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm" aria-label="Main">
                 @foreach ([['bids.open', 'Open bids'], ['bids.closed', 'Closed bids'], ['bids.search', 'Search bids']] as [$route, $label])
-                    <a href="{{ route($route) }}" @class([
+                    <a href="{{ route($route) }}" 
+                    @if (request()->routeIs($route)) aria-current="page" @endif
+                    @class([
                         'font-medium text-brand-500' => request()->routeIs($route),
                         'text-gray-600 hover:text-gray-900' => ! request()->routeIs($route),
                     ])>{{ $label }}</a>
@@ -37,7 +40,7 @@
         </div>
     </header>
 
-    <main class="flex-1">
+    <main id="main" tabindex="-1" class="flex-1">
         @yield('content')
     </main>
 
