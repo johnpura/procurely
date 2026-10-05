@@ -65,6 +65,7 @@ class Bid extends Model
             'name' => $this->assignee?->name ?? $default['name'],
             'email' => $this->assignee?->email ?? $default['email'],
             'phone' => $this->assignee?->phone ?: $default['phone'],
+            'title' => $usable ? $user->job_title : null,
         ];
     }
 

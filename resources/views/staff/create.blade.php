@@ -26,6 +26,19 @@
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label for="phone" class="{{ $label }}">Phone (optional)</label>
+                    <input id="phone" name="phone" value="{{ old('phone') }}" class="{{ $input }}">
+                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                </div>
+                <div>
+                    <label for="job_title" class="{{ $label }}">Job title (optional)</label>
+                    <input id="job_title" name="job_title" value="{{ old('job_title') }}" class="{{ $input }}">
+                    <x-input-error :messages="$errors->get('job_title')" class="mt-2" />
+                </div>
+            </div>
+
             <div>
                 <label for="role" class="{{ $label }}">Role</label>
                 <select id="role" name="role" class="{{ $input }}">

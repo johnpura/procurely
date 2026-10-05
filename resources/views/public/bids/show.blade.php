@@ -27,8 +27,13 @@
             <div><dt class="text-gray-500">Responses due</dt><dd class="font-medium">{{ $bid->closes_at?->format('M j, Y g:i A T') ?? '-' }}</dd></div>
             <div><dt class="text-gray-500">Contact</dt>
                 <dd class="font-medium">{{ $contact['name'] }}<br>
+                    @if ($contact['title'])
+                        <span class="block font-normal text-gray-500">{{ $contact['title'] }}</span>
+                    @endif
                     <a href="mailto:{{ $contact['email'] }}" class="text-brand-500 hover:text-brand-600">{{ $contact['email'] }}</a><br>
-                    {{ $contact['phone'] }}</dd></div>
+                    {{ $contact['phone'] }}
+                </dd>
+            </div>
         </dl>
 
         @if ($bid->status === \App\Enums\BidStatus::Awarded)

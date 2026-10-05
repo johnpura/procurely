@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'phone', 'password'])]
+#[Fillable(['name', 'email', 'phone', 'password', 'job_title'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -41,6 +41,17 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === Role::Admin;
+    }
+
+    /** 
+     * True when this is the only active, non-deleted admin left. 
+     */
+    public function isLastActiveAdmin(): bool
+    {
+        return $this->isAdmin()
+            && $this->is_active
+            && ! $this->trashed()
+            && ! static::where('role', Role::Admin)->where('is_active', true)->whereKeyNot($this->id)->exists();
     }
 
     public function creator(): BelongsTo
