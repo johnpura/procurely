@@ -32,6 +32,10 @@ Open http://localhost. Seeding in the local environment creates an admin account
 - Accounts are created by admins. There is no public registration.
 - Users have is_active (temporary disable) and soft deletes (left the organization).
 
+## Configuration
+
+The organization name, department and default contact are in config/procurely.php. Set APP_TIMEZONE to the city's time zone so bid closing times are correct.
+
 ## Deploying
 
 Create a `deploy.sh` script and place it in the project root.
@@ -59,6 +63,23 @@ Mail (.env): MAIL_MAILER, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MA
 
 After deploying, test an upload of a large PDF through the vendor form on the live site.
 
-## Configuration
+## Records retention
 
-The organization name, department and default contact are in config/procurely.php. Set APP_TIMEZONE to the city's time zone so bid closing times are correct.
+**Status: period not yet confirmed.** Confirm with the city clerk or counsel before launch, then fill in the table below.
+
+| Record | Where it lives | Retention period | Notes |
+|---|---|---|---|
+| Bids, descriptions and award results | `bids` table | _to be confirmed_ | Never deleted by the app once published. Only drafts can be deleted. |
+| Bid documents (RFP packets, addenda) | `storage/app/private/bids/` | _to be confirmed_ | Stored privately and served through the site. |
+| Vendor responses and their files | `bid_responses`, `storage/app/private/responses/` | _to be confirmed_ | Contain vendor contact details and proposals. A bid with responses cannot be deleted in the app. |
+| Audit log | `audit_logs` | _to be confirmed_ | Append-only: the app cannot edit or delete entries. |
+| User accounts | `users` | Kept while employed; soft-deleted afterwards | Removed staff stay in the database so history still shows who acted. |
+
+Until a period is set, nothing is deleted. Deleting anything past its retention period is a deliberate manual task, and should be recorded.
+
+Questions to settle with the clerk:
+1. How long must bid records and vendor responses be kept after award or cancellation?
+2. Do unsuccessful vendors' responses follow the same period as the winning one?
+3. Does the audit log have its own period?
+4. How are public records requests handled (who exports responses, and what is redacted)?
+5. Is a legal hold process needed, so records cannot be purged while a protest or lawsuit is open?
