@@ -70,4 +70,11 @@ class HardeningTest extends TestCase
         $this->actingAs($admin)->post('/staff', $base + ['password' => 'Str0ng-Passw0rd!', 'password_confirmation' => 'Str0ng-Passw0rd!'])
             ->assertSessionHasNoErrors();
     }
+
+    public function test_the_current_nav_link_is_marked_for_assistive_technology(): void
+    {
+        $this->get('/bids/open')->assertSee('aria-current="page"', false);
+        $this->get('/bids/open')->assertSee('Open bids');
+        $this->assertSame(1, substr_count($this->get('/bids/open')->getContent(), 'aria-current="page"'));
+    }
 }
