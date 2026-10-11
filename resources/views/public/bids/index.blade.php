@@ -51,7 +51,7 @@
         @endif
 
         <div class="mt-6">
-            @include('public.bids._table', ['bids' => $bids])
+            @include('public.bids.partials.table', ['bids' => $bids])
         </div>
 
         <div class="mt-6">{{ $bids->links() }}</div>

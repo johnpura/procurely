@@ -46,6 +46,7 @@ class MenuHelper
         $items = [
             ['icon' => 'dashboard', 'name' => 'Dashboard', 'path' => '/dashboard'],
             ['icon' => 'forms', 'name' => 'Bids', 'path' => '/manage/bids'],
+            ['icon' => 'ui-elements', 'name' => 'Help', 'path' => '/help'],
         ];
 
         if (auth()->user()?->isAdmin()) {

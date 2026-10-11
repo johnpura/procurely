@@ -36,7 +36,7 @@
                 <h2 class="text-xl font-bold tracking-tight text-gray-900">Closing soonest</h2>
                 <a href="{{ route('bids.open') }}" class="text-sm text-brand-500 hover:text-brand-600">All open bids</a>
             </div>
-            @include('public.bids._table', ['bids' => $latest])
+            @include('public.bids.partials.table', ['bids' => $latest])
         </section>
     @endif
 
