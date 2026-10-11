@@ -30,6 +30,8 @@ Route::prefix('bids')->name('bids.')->group(function () {
 
 Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::view('/help', 'help')->middleware(['auth', 'verified'])->name('help');
+
 Route::middleware(['auth', 'role:admin'])->prefix('staff')->name('staff.')->whereNumber('user')->group(function () {
     Route::get('/', [StaffController::class, 'index'])->name('index');
     Route::get('create', [StaffController::class, 'create'])->name('create');
